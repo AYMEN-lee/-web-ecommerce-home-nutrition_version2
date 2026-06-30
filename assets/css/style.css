@@ -149,18 +149,28 @@ input, select, textarea { font-family: inherit; }
 .btn[disabled] { opacity: .4; cursor: not-allowed; transform: none; }
 
 /* ---- hero -------------------------------------------------------------- */
-.hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+.hero {
+  position: relative; overflow: hidden; border-bottom: 1px solid var(--line);
+  background-image: url('../img/hero-bg.png');
+  background-size: cover;
+  background-position: center 20%;
+}
 .hero::before {
   content: ""; position: absolute; inset: 0;
   background:
-    radial-gradient(620px 360px at 78% -10%, rgba(255,90,31,.20), transparent 60%),
-    radial-gradient(500px 320px at 0% 120%, rgba(255,90,31,.08), transparent 60%);
+    linear-gradient(to right,
+      rgba(10,10,11,.95) 0%,
+      rgba(10,10,11,.88) 38%,
+      rgba(10,10,11,.55) 65%,
+      rgba(10,10,11,.25) 100%),
+    radial-gradient(620px 360px at 78% -10%, rgba(255,90,31,.18), transparent 60%),
+    radial-gradient(500px 320px at 0% 120%, rgba(255,90,31,.10), transparent 60%);
   pointer-events: none;
 }
 .hero__stripes {
   position: absolute; right: -60px; top: 0; bottom: 0; width: 46%;
   background-image: repeating-linear-gradient(115deg,
-    rgba(255,255,255,.04) 0 2px, transparent 2px 26px);
+    rgba(255,255,255,.03) 0 2px, transparent 2px 26px);
   transform: skewX(-12deg); pointer-events: none;
 }
 .hero__inner { position: relative; padding: 78px 0 70px; max-width: 760px; }
@@ -477,6 +487,17 @@ input, select, textarea { font-family: inherit; }
   .field-grid { grid-template-columns: 1fr; }
   .hero__inner { padding: 56px 0 50px; }
   .variant-row { grid-template-columns: 1fr 1fr; }
+  .hero {
+    background-position: 70% center;
+  }
+  .hero::before {
+    background:
+      linear-gradient(to bottom,
+        rgba(10,10,11,.82) 0%,
+        rgba(10,10,11,.70) 60%,
+        rgba(10,10,11,.90) 100%),
+      radial-gradient(400px 300px at 50% 0%, rgba(255,90,31,.15), transparent 60%);
+  }
 }
 @media (max-width: 560px) {
   .footer__grid { grid-template-columns: 1fr; }
@@ -493,6 +514,79 @@ input, select, textarea { font-family: inherit; }
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: .001ms !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
 }
+
+/* ---- delivery type toggle (checkout) ----------------------------------- */
+.delivery-seg { display: flex; gap: 10px; }
+.delivery-opt {
+  flex: 1; padding: 14px 16px; border-radius: 11px; font-family: var(--display);
+  font-weight: 700; font-size: 13.5px; text-transform: uppercase; letter-spacing: .04em;
+  background: var(--carbon); border: 1.5px solid var(--line); color: var(--ash);
+  transition: all .18s; cursor: pointer; text-align: center;
+}
+.delivery-opt:hover { border-color: var(--line-2); color: var(--bone); }
+.delivery-opt[aria-pressed="true"] {
+  border-color: var(--accent); color: var(--bone); background: var(--accent-soft);
+  box-shadow: 0 0 18px -6px rgba(255,90,31,.45);
+}
+
+/* ---- delivery type badge (admin orders) -------------------------------- */
+.badge-home {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 10px; border-radius: 7px; font-family: var(--mono);
+  font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: #3b82f6; background: rgba(59,130,246,.12); border: 1px solid rgba(59,130,246,.35);
+  box-shadow: 0 0 12px -4px rgba(59,130,246,.6);
+}
+.badge-office {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 10px; border-radius: 7px; font-family: var(--mono);
+  font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent-line);
+  box-shadow: 0 0 12px -4px rgba(255,90,31,.5);
+}
+
+/* ---- admin tabs -------------------------------------------------------- */
+.admin-tabs {
+  display: flex; gap: 0; margin: 0 0 28px;
+  border-bottom: 1px solid var(--line);
+}
+.admin-tab {
+  padding: 13px 26px; font-family: var(--display); font-weight: 700; font-size: 13.5px;
+  text-transform: uppercase; letter-spacing: .05em; color: var(--ash);
+  background: none; border: none; border-bottom: 2px solid transparent;
+  margin-bottom: -1px; transition: color .15s, border-color .15s; cursor: pointer;
+}
+.admin-tab:hover { color: var(--bone); }
+.admin-tab.active { color: var(--bone); border-bottom-color: var(--accent); }
+.admin-tab .tab-count {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  background: var(--steel); border-radius: 99px; padding: 2px 7px; margin-left: 7px;
+  color: var(--ash);
+}
+.admin-tab.active .tab-count { background: var(--accent-soft); color: var(--accent); }
+
+/* ---- order filter pills ------------------------------------------------ */
+.order-filter-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.order-filter-btn {
+  padding: 7px 16px; border-radius: 999px; font-family: var(--mono);
+  font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  background: var(--carbon); border: 1.5px solid var(--line); color: var(--ash);
+  transition: all .15s; cursor: pointer; white-space: nowrap;
+}
+.order-filter-btn:hover { color: var(--bone); border-color: var(--ash-dim); }
+.order-filter-btn.active { background: var(--bone); color: var(--ink); border-color: var(--bone); }
+.order-filter-btn .tab-count { margin-left: 6px; }
+
+/* ---- social media icons in footer -------------------------------------- */
+.social-icons { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+.social-icon {
+  display: block; width: 40px; height: 40px;
+  border-radius: 10px; overflow: hidden;
+  transition: transform .15s ease, opacity .15s;
+  flex-shrink: 0;
+}
+.social-icon:hover { transform: translateY(-3px); opacity: .85; }
+.social-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* ---- language toggle --------------------------------------------------- */
 .lang-toggle {
@@ -541,3 +635,17 @@ html[dir="rtl"] .footer__bar { flex-direction: row-reverse; }
 html[dir="rtl"] .section__head { flex-direction: row-reverse; }
 html[dir="rtl"] .hero__stats { flex-direction: row; }
 html[dir="rtl"] .hero__cta { flex-direction: row-reverse; justify-content: flex-end; }
+
+/* always render prices left-to-right even in Arabic/RTL mode */
+html[dir="rtl"] .price,
+html[dir="rtl"] .price b,
+html[dir="rtl"] .mini-item__price,
+html[dir="rtl"] .cart-item__price,
+html[dir="rtl"] .pd__price,
+html[dir="rtl"] .summary__row span:last-child,
+html[dir="rtl"] .summary__total b,
+html[dir="rtl"] .hero__stats .stat strong {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
+}

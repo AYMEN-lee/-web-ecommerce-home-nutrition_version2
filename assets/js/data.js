@@ -9,9 +9,10 @@
 
   var KEYS = {
     products: "hn_products",
-    cart: "hn_cart",
-    seed: "hn_seed_version",
-    admin: "hn_admin_ok"
+    cart:     "hn_cart",
+    orders:   "hn_orders",
+    seed:     "hn_seed_version",
+    admin:    "hn_admin_ok"
   };
 
   // Bump this when the seed catalog changes to re-seed on next load.
@@ -282,6 +283,25 @@
     },
     clearCart: function () {
       write(KEYS.cart, []);
+    },
+
+    /* orders */
+    orders: function () {
+      return read(KEYS.orders, []);
+    },
+    saveOrder: function (order) {
+      order.status = order.status || "pending";
+      var list = this.orders();
+      list.unshift(order);
+      write(KEYS.orders, list);
+    },
+    updateOrderStatus: function (ref, status) {
+      var list = this.orders();
+      var o = list.find(function (x) { return x.ref === ref; });
+      if (o) { o.status = status; write(KEYS.orders, list); }
+    },
+    removeOrder: function (ref) {
+      write(KEYS.orders, this.orders().filter(function (x) { return x.ref !== ref; }));
     },
 
     /* admin gate — frontend only, NOT real security. Replace with backend auth. */

@@ -39,52 +39,199 @@
   }
 
   /* ---- dashboard --------------------------------------------------------- */
+  var activeTab = "catalog";
+  var orderFilter = "all";
+
   function renderAdmin() {
     var products = DB.all();
+    var orders   = DB.orders();
+    /* normalize any legacy "new" status to "pending" in storage */
+    var needsSave = false;
+    orders.forEach(function (o) {
+      if (!o.status || o.status === "new") { o.status = "pending"; needsSave = true; }
+    });
+    if (needsSave) localStorage.setItem("hn_orders", JSON.stringify(orders));
+
+    var orderCounts = { all: orders.length, pending: 0, confirmed: 0, cancelled: 0 };
+    orders.forEach(function (o) {
+      if (o.status === "pending")   orderCounts.pending++;
+      else if (o.status === "confirmed") orderCounts.confirmed++;
+      else if (o.status === "cancelled") orderCounts.cancelled++;
+    });
+    var filteredOrders = orderFilter === "all"
+      ? orders
+      : orders.filter(function (o) { return o.status === orderFilter; });
     var totalVariants = products.reduce(function (n, p) {
       return n + p.flavors.reduce(function (m, f) { return m + f.variants.length; }, 0);
     }, 0);
 
     root.innerHTML =
+      /* page title + add button */
       '<div class="admin-head">' +
-        '<div><h1>Catalog</h1>' +
-          '<div class="sub">' + products.length + ' products · ' + totalVariants + ' variants</div></div>' +
+        '<div><h1>' + (activeTab === "catalog" ? "Catalog" : "Orders") + '</h1>' +
+          '<div class="sub">' +
+            (activeTab === "catalog"
+              ? products.length + ' products · ' + totalVariants + ' variants'
+              : orders.length + ' order' + (orders.length !== 1 ? 's' : '') + ' total') +
+          '</div></div>' +
         '<div class="admin-actions">' +
-          '<button class="btn btn--ghost" id="resetBtn">Reset demo</button>' +
-          '<button class="btn btn--ghost" id="logoutBtn">Sign out</button>' +
-          '<button class="btn btn--accent" id="addBtn">+ Add product</button>' +
+          (activeTab === "catalog"
+            ? '<button class="btn btn--accent" id="addBtn">+ Add product</button>'
+            : (orders.length ? '<button class="btn btn--ghost btn-sm" id="clearOrdersBtn">Clear all orders</button>' : '')) +
         '</div>' +
       '</div>' +
-      '<div class="table-wrap"><table class="atable"><thead><tr>' +
-        '<th>Product</th><th>Category</th><th>Flavors</th><th>Price (DA)</th><th>Stock</th><th></th>' +
-      '</tr></thead><tbody id="tbody"></tbody></table></div>';
 
+      /* tab bar */
+      '<div class="admin-tabs">' +
+        '<button class="admin-tab' + (activeTab === "catalog" ? " active" : "") + '" id="tabCatalog">' +
+          'Catalog <span class="tab-count">' + products.length + '</span></button>' +
+        '<button class="admin-tab' + (activeTab === "orders" ? " active" : "") + '" id="tabOrders">' +
+          'Orders <span class="tab-count">' + orders.length + '</span></button>' +
+      '</div>' +
+
+      /* catalog section */
+      '<div id="catalogSection"' + (activeTab !== "catalog" ? ' style="display:none"' : '') + '>' +
+        '<div class="table-wrap"><table class="atable"><thead><tr>' +
+          '<th>Product</th><th>Category</th><th>Flavors</th><th>Price (DA)</th><th>Stock</th><th></th>' +
+        '</tr></thead><tbody id="tbody"></tbody></table></div>' +
+      '</div>' +
+
+      /* orders section */
+      '<div id="ordersSection"' + (activeTab !== "orders" ? ' style="display:none"' : '') + '>' +
+        '<div class="order-filter-bar">' +
+          ofBtnHtml("all",       "All",       orderCounts.all) +
+          ofBtnHtml("pending",   "Pending",   orderCounts.pending) +
+          ofBtnHtml("confirmed", "Confirmed", orderCounts.confirmed) +
+          ofBtnHtml("cancelled", "Cancelled", orderCounts.cancelled) +
+        '</div>' +
+        '<div class="table-wrap" style="margin-bottom:60px">' +
+          '<table class="atable"><thead><tr>' +
+            '<th>Date</th><th>Ref</th><th>Customer</th><th>Location</th>' +
+            '<th>Items</th><th>Total (DA)</th><th>Status</th><th></th>' +
+          '</tr></thead><tbody id="ordersTbody"></tbody></table>' +
+        '</div>' +
+      '</div>';
+
+    /* ---- tab wiring ---- */
+    document.getElementById("tabCatalog").addEventListener("click", function () {
+      activeTab = "catalog"; renderAdmin();
+    });
+    document.getElementById("tabOrders").addEventListener("click", function () {
+      activeTab = "orders"; renderAdmin();
+    });
+
+    /* ---- catalog wiring ---- */
     var tbody = document.getElementById("tbody");
-    if (!products.length) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--ash);padding:40px">No products yet. Add your first one.</td></tr>';
-    } else {
-      tbody.innerHTML = products.map(rowHtml).join("");
+    if (tbody) {
+      tbody.innerHTML = products.length
+        ? products.map(rowHtml).join("")
+        : '<tr><td colspan="6" style="text-align:center;color:var(--ash);padding:40px">No products yet. Add your first one.</td></tr>';
+
+      tbody.querySelectorAll("[data-edit]").forEach(function (b) {
+        b.addEventListener("click", function () { openEditor(DB.get(b.getAttribute("data-edit"))); });
+      });
+      tbody.querySelectorAll("[data-del]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          var p = DB.get(b.getAttribute("data-del"));
+          if (confirm('Delete "' + p.name + '"? This cannot be undone.')) {
+            DB.remove(p.id); renderAdmin(); HN.toast("Product deleted", "trash");
+          }
+        });
+      });
     }
 
-    tbody.querySelectorAll("[data-edit]").forEach(function (b) {
-      b.addEventListener("click", function () { openEditor(DB.get(b.getAttribute("data-edit"))); });
-    });
-    tbody.querySelectorAll("[data-del]").forEach(function (b) {
-      b.addEventListener("click", function () {
-        var p = DB.get(b.getAttribute("data-del"));
-        if (confirm('Delete "' + p.name + '"? This cannot be undone.')) {
-          DB.remove(p.id); renderAdmin(); HN.toast("Product deleted", "trash");
-        }
-      });
+    var addBtn = document.getElementById("addBtn");
+    if (addBtn) addBtn.addEventListener("click", function () { openEditor(null); });
+
+    /* ---- orders wiring ---- */
+    ["all", "pending", "confirmed", "cancelled"].forEach(function (f) {
+      var btn = document.getElementById("of-" + f);
+      if (btn) btn.addEventListener("click", function () { orderFilter = f; renderAdmin(); });
     });
 
-    document.getElementById("addBtn").addEventListener("click", function () { openEditor(null); });
-    document.getElementById("logoutBtn").addEventListener("click", function () { DB.logout(); showGate(); });
-    document.getElementById("resetBtn").addEventListener("click", function () {
-      if (confirm("Reset the catalog back to the demo products?")) {
-        DB.resetCatalog(); renderAdmin(); HN.toast("Catalog reset");
-      }
-    });
+    var ordersTbody = document.getElementById("ordersTbody");
+    if (ordersTbody) {
+      ordersTbody.innerHTML = filteredOrders.length
+        ? filteredOrders.map(orderRowHtml).join("")
+        : '<tr><td colspan="8" style="text-align:center;color:var(--ash);padding:40px">' +
+            (orderFilter === "all" ? "No orders yet." : "No " + orderFilter + " orders.") +
+          '</td></tr>';
+
+      ordersTbody.querySelectorAll(".status-select").forEach(function (sel) {
+        sel.addEventListener("change", function () {
+          DB.updateOrderStatus(sel.getAttribute("data-ref"), sel.value);
+          renderAdmin();
+        });
+      });
+      ordersTbody.querySelectorAll("[data-del-order]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          if (confirm("Delete this order? This cannot be undone.")) {
+            DB.removeOrder(btn.getAttribute("data-del-order"));
+            renderAdmin();
+            HN.toast("Order deleted", "trash");
+          }
+        });
+      });
+    }
+
+    var clearBtn = document.getElementById("clearOrdersBtn");
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        if (confirm("Delete ALL orders? This cannot be undone.")) {
+          localStorage.setItem("hn_orders", "[]");
+          renderAdmin();
+          HN.toast("All orders cleared", "trash");
+        }
+      });
+    }
+  }
+
+  function ofBtnHtml(filter, label, count) {
+    return '<button class="order-filter-btn' + (orderFilter === filter ? ' active' : '') + '" id="of-' + filter + '">' +
+      label + ' <span class="tab-count">' + count + '</span></button>';
+  }
+
+  var STATUS_LABELS = { pending: "Pending", confirmed: "Confirmed", cancelled: "Cancelled" };
+  var STATUS_COLORS = { pending: "var(--accent)", confirmed: "#3b82f6", cancelled: "var(--ash-dim)" };
+
+  function orderRowHtml(o) {
+    var c = o.customer || {};
+    var itemsSummary = (o.items || []).map(function (it) {
+      return HN.escape(it.name) + ' <span class="muted">(' + HN.escape(it.flavor) + ' · ' + HN.escape(it.weight) + ' ×' + it.qty + ')</span>';
+    }).join('<br>');
+    var date = o.placedAt ? new Date(o.placedAt).toLocaleString("fr-DZ") : "—";
+    var status = (o.status === "new" || !o.status) ? "pending" : o.status;
+    var statusColor = STATUS_COLORS[status] || "var(--ash)";
+
+    var statusOpts = Object.keys(STATUS_LABELS).map(function (s) {
+      return '<option value="' + s + '"' + (s === status ? " selected" : "") + '>' + STATUS_LABELS[s] + '</option>';
+    }).join("");
+
+    return (
+      '<tr>' +
+        '<td class="mono" style="font-size:12px;white-space:nowrap">' + date + '</td>' +
+        '<td class="mono" style="color:var(--accent);white-space:nowrap">' + HN.escape(o.ref) + '</td>' +
+        '<td><b>' + HN.escape((c.firstName || "") + ' ' + (c.lastName || "")) + '</b>' +
+          '<br><span class="mono" style="font-size:12px">' + HN.escape(c.phone || "") + '</span></td>' +
+        '<td style="font-size:13px">' +
+          (o.deliveryType === "home"
+            ? '<span class="badge-home" style="margin-bottom:6px;display:inline-flex">🏠 Home delivery</span><br>'
+            : '<span class="badge-office" style="margin-bottom:6px;display:inline-flex">📦 Delivery office</span><br>') +
+          HN.escape(c.wilaya || "") + '<br>' +
+          '<span class="muted">' + HN.escape(c.city || "") + (c.address ? ', ' + HN.escape(c.address) : '') + '</span></td>' +
+        '<td style="font-size:13px;line-height:1.6">' + (itemsSummary || "—") + '</td>' +
+        '<td class="mono" style="font-weight:700;white-space:nowrap;color:var(--bone)" dir="ltr">' + HN.money(o.total || 0) + ' DA</td>' +
+        '<td>' +
+          '<select class="status-select" data-ref="' + HN.escape(o.ref) + '" style="' +
+            'background:var(--carbon);border:1.5px solid ' + statusColor + ';border-radius:8px;' +
+            'padding:6px 10px;color:' + statusColor + ';font-family:var(--mono);font-size:12px;font-weight:700;cursor:pointer">' +
+            statusOpts +
+          '</select>' +
+        '</td>' +
+        '<td><button class="btn btn--ghost btn-sm" data-del-order="' + HN.escape(o.ref) + '" title="Delete order">' +
+          HN.icon("trash") + '</button></td>' +
+      '</tr>'
+    );
   }
 
   function rowHtml(p) {
@@ -101,7 +248,7 @@
           '<div class="atable__brand">' + HN.escape(p.brand) + '</div></div></div></td>' +
         '<td><span class="tag">' + HN.escape(p.category) + '</span></td>' +
         '<td class="mono">' + p.flavors.length + '</td>' +
-        '<td class="mono">' + priceLabel + '</td>' +
+        '<td class="mono" dir="ltr">' + priceLabel + '</td>' +
         '<td class="mono">' + stock + '</td>' +
         '<td><div class="row-actions">' +
           '<button class="btn btn--outline btn-sm" data-edit="' + HN.escape(p.id) + '">Edit</button>' +

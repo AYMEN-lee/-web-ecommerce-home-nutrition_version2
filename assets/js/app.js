@@ -18,10 +18,10 @@
       lang_switch:     "Arabic",
       eyebrow:         "Professional Sports Nutrition",
       hero_h1:         'Fuel the<br><span class="ol">work.</span> Earn<br>the results.',
-      hero_p:          "Authentic, lab-tested supplements — creatine, protein, pre-workout and more. Picked by lifters, delivered to the delivery office or to your door across all 58 wilayas.",
+      hero_p:          "Authentic, lab-tested supplements — creatine, protein, pre-workout and more. Picked by lifters, delivered to the delivery office or to your door across all 69 wilayas.",
       hero_cta:        "Shop the range",
       stat_wilayas:    "Wilayas served",
-      stat_authentic:  "Authentic stock",
+      stat_authentic:  "Original products",
       catalog_all:     "All products",
       catalog_all_sub: "Every product is fulfilled cash-on-delivery.",
       catalog_search:  'Search: "{q}"',
@@ -35,7 +35,7 @@
       empty_title:     "Nothing here yet",
       empty_p:         "No products match this filter. Try another category.",
       empty_btn:       "View all",
-      footer_tagline:  "Authentic, lab-tested sports nutrition — delivered across all 58 wilayas. Train hard. Recover right.",
+      footer_tagline:  "Authentic, lab-tested sports nutrition — delivered across all 69 wilayas. Train hard. Recover right.",
       footer_shop:     "Shop",
       footer_help:     "Help",
       footer_follow:   "Follow",
@@ -50,7 +50,45 @@
       footer_ig:       "Instagram",
       footer_fb:       "Facebook",
       footer_tt:       "TikTok",
-      footer_bar:      "CASH ON DELIVERY · 58 WILAYAS"
+      footer_bar:      "CASH ON DELIVERY · 69 WILAYAS",
+      /* checkout */
+      co_breadcrumb_cart:   "Cart",
+      co_breadcrumb_confirm:"Confirm order",
+      co_title:        "Delivery details",
+      co_subtitle:     "We deliver across all 69 wilayas. Pay cash when your order arrives.",
+      co_fname:        "First name",
+      co_fname_ph:     "e.g. Yacine",
+      co_lname:        "Last name",
+      co_lname_ph:     "e.g. Benali",
+      co_phone:        "Phone number",
+      co_phone_ph:     "0X XX XX XX XX",
+      co_wilaya:       "Wilaya (state)",
+      co_wilaya_ph:    "Select wilaya…",
+      co_city:         "City / Commune",
+      co_city_ph:      "e.g. Djelfa",
+      co_address:      "Address (optional)",
+      co_address_ph:   "Street, building, landmark…",
+      co_place_order:  "Place order",
+      co_your_order:   "Your order",
+      co_subtotal:     "Subtotal",
+      co_delivery:     "Delivery",
+      co_free:         "Free",
+      co_total:        "Total",
+      co_cod_note:     "Cash on delivery. No prepayment needed.",
+      co_back_cart:    "Back to cart",
+      co_err_required: "This field is required.",
+      co_err_wilaya:   "Please choose your wilaya.",
+      co_empty_title:  "Nothing to confirm",
+      co_empty_p:      "Your cart is empty.",
+      co_go_shop:      "Go shopping",
+      co_success_title:"Order confirmed",
+      co_success_p1:   "Thanks, {name}. Your order is in.",
+      co_success_p2:   "We'll call {phone} to confirm delivery to {city}, {wilaya}.",
+      co_keep_shop:    "Keep shopping",
+      co_delivery_type:   "Delivery type",
+      co_delivery_office: "Delivery office",
+      co_home_delivery:   "Home delivery",
+      co_address_home:    "Full address"
     },
     ar: {
       nav_shop:        "المتجر",
@@ -62,10 +100,10 @@
       lang_switch:     "English",
       eyebrow:         "تغذية رياضية احترافية",
       hero_h1:         'اعمل<br><span class="ol">بجد.</span> احصد<br>النتائج.',
-      hero_p:          "مكملات غذائية أصيلة ومختبرة مخبرياً — كرياتين، بروتين، ما قبل التمرين والمزيد. يختارها الرياضيون، تُوصَّل إلى مكتب التوصيل أو إلى بابك عبر 58 ولاية.",
+      hero_p:          "مكملات غذائية أصيلة ومختبرة مخبرياً — كرياتين، بروتين، ما قبل التمرين والمزيد. يختارها الرياضيون، تُوصَّل إلى مكتب التوصيل أو إلى بابك عبر 69 ولاية.",
       hero_cta:        "تسوق المنتجات",
       stat_wilayas:    "ولاية تخدمها",
-      stat_authentic:  "مخزون أصيل",
+      stat_authentic:  "منتجات أصيلة",
       catalog_all:     "جميع المنتجات",
       catalog_all_sub: "جميع المنتجات بالدفع عند الاستلام.",
       catalog_search:  'بحث: "{q}"',
@@ -79,7 +117,7 @@
       empty_title:     "لا توجد منتجات",
       empty_p:         "لا توجد منتجات تطابق هذا الفلتر. جرّب فئة أخرى.",
       empty_btn:       "عرض الكل",
-      footer_tagline:  "تغذية رياضية أصيلة ومختبرة — توصيل عبر 58 ولاية. تدرّب بجد. تعافَ بشكل صحيح.",
+      footer_tagline:  "تغذية رياضية أصيلة ومختبرة — توصيل عبر 69 ولاية. تدرّب بجد. تعافَ بشكل صحيح.",
       footer_shop:     "المتجر",
       footer_help:     "المساعدة",
       footer_follow:   "تابعنا",
@@ -94,7 +132,45 @@
       footer_ig:       "إنستغرام",
       footer_fb:       "فيسبوك",
       footer_tt:       "تيكتوك",
-      footer_bar:      "دفع عند الاستلام · 58 ولاية"
+      footer_bar:      "دفع عند الاستلام · 69 ولاية",
+      /* checkout */
+      co_breadcrumb_cart:   "السلة",
+      co_breadcrumb_confirm:"تأكيد الطلب",
+      co_title:        "تفاصيل التوصيل",
+      co_subtitle:     "نوصّل عبر 69 ولاية. ادفع نقداً عند استلام طلبك.",
+      co_fname:        "الاسم الأول",
+      co_fname_ph:     "مثال: ياسين",
+      co_lname:        "اللقب",
+      co_lname_ph:     "مثال: بن علي",
+      co_phone:        "رقم الهاتف",
+      co_phone_ph:     "0X XX XX XX XX",
+      co_wilaya:       "الولاية",
+      co_wilaya_ph:    "اختر الولاية...",
+      co_city:         "المدينة / البلدية",
+      co_city_ph:      "مثال: الجلفة",
+      co_address:      "العنوان (اختياري)",
+      co_address_ph:   "الشارع، المبنى، المعلم...",
+      co_place_order:  "تأكيد الطلب",
+      co_your_order:   "طلبك",
+      co_subtotal:     "المجموع الفرعي",
+      co_delivery:     "التوصيل",
+      co_free:         "مجاني",
+      co_total:        "المجموع",
+      co_cod_note:     "الدفع عند الاستلام. لا حاجة للدفع المسبق.",
+      co_back_cart:    "العودة إلى السلة",
+      co_err_required: "هذا الحقل مطلوب.",
+      co_err_wilaya:   "الرجاء اختيار الولاية.",
+      co_empty_title:  "لا يوجد ما يؤكد",
+      co_empty_p:      "سلة التسوق فارغة.",
+      co_go_shop:      "تسوق الآن",
+      co_success_title:"تم تأكيد الطلب",
+      co_success_p1:   "شكراً، {name}. تم استلام طلبك.",
+      co_success_p2:   "سنتصل بك على {phone} لتأكيد التوصيل إلى {city}، {wilaya}.",
+      co_keep_shop:    "متابعة التسوق",
+      co_delivery_type:   "نوع التوصيل",
+      co_delivery_office: "مكتب التوصيل",
+      co_home_delivery:   "توصيل للمنزل",
+      co_address_home:    "العنوان الكامل"
     }
   };
 
@@ -131,7 +207,7 @@
     return Math.round(n).toLocaleString("fr-DZ").replace(/ /g, " ").replace(/,/g, " ");
   };
   HN.price = function (n) {
-    return '<span class="mono">' + HN.money(n) + ' <span class="cur">DA</span></span>';
+    return '<span class="mono" dir="ltr">' + HN.money(n) + ' <span class="cur">DA</span></span>';
   };
 
   /* ---- inline icons ------------------------------------------------------ */
@@ -168,9 +244,12 @@
           '</nav>' +
           '<div class="header__tools">' +
             '<button class="icon-btn" id="searchBtn" aria-label="' + HN.t("search_label") + '">' + ICONS.search + '</button>' +
-            '<a class="icon-btn" href="cart.html" aria-label="' + HN.t("cart_label") + '">' + ICONS.cart +
-              '<span class="cart-badge" id="cartBadge">0</span></a>' +
+            (page !== "admin"
+              ? '<a class="icon-btn" href="cart.html" aria-label="' + HN.t("cart_label") + '">' + ICONS.cart +
+                  '<span class="cart-badge" id="cartBadge">0</span></a>'
+              : '') +
             (page !== "admin" ? '<button class="lang-toggle" id="langToggle">' + HN.t("lang_switch") + '</button>' : '') +
+            (page === "admin" ? '<button class="lang-toggle" id="signOutBtn">Sign out</button>' : '') +
             '<button class="icon-btn menu-toggle" id="menuToggle" aria-label="' + HN.t("menu_label") + '">' + ICONS.menu + '</button>' +
           '</div>' +
         '</div></header>';
@@ -188,6 +267,12 @@
       var lt = document.getElementById("langToggle");
       if (lt) lt.addEventListener("click", function () {
         HN.setLang(HN.currentLang === "en" ? "ar" : "en");
+      });
+
+      var sob = document.getElementById("signOutBtn");
+      if (sob) sob.addEventListener("click", function () {
+        if (window.DB) DB.logout();
+        location.reload();
       });
     }
 
@@ -208,10 +293,15 @@
             '<li><a href="index.html">' + HN.t("footer_all") + '</a></li>' +
             '<li><a href="#">' + HN.t("footer_delivery") + '</a></li>' +
             '<li><a href="#">' + HN.t("footer_contact") + '</a></li></ul></div>' +
-          '<div><h4>' + HN.t("footer_follow") + '</h4><ul>' +
-            '<li><a href="#">' + HN.t("footer_ig") + '</a></li>' +
-            '<li><a href="#">' + HN.t("footer_fb") + '</a></li>' +
-            '<li><a href="#">' + HN.t("footer_tt") + '</a></li></ul></div>' +
+          '<div><h4>' + HN.t("footer_follow") + '</h4>' +
+            '<div class="social-icons">' +
+              '<a href="#" aria-label="' + HN.t("footer_ig") + '" class="social-icon">' +
+                '<img src="assets/img/instagram.png" alt="Instagram"></a>' +
+              '<a href="#" aria-label="' + HN.t("footer_fb") + '" class="social-icon">' +
+                '<img src="assets/img/facebook.png" alt="Facebook"></a>' +
+              '<a href="#" aria-label="' + HN.t("footer_tt") + '" class="social-icon">' +
+                '<img src="assets/img/tiktok.png" alt="TikTok"></a>' +
+            '</div></div>' +
         '</div><div class="footer__bar">' +
           '<span>© ' + new Date().getFullYear() + ' HN NUTRITION</span>' +
           '<span>' + HN.t("footer_bar") + '</span>' +
