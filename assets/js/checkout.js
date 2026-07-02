@@ -212,11 +212,15 @@
       placedAt: new Date().toISOString()
     };
 
-    console.log("ORDER:", order);
-    DB.saveOrder(order);
-    DB.clearCart();
-    HN.updateBadge();
-    showSuccess(order);
+    DB.saveOrder(order)
+      .then(function () {
+        DB.clearCart();
+        HN.updateBadge();
+        showSuccess(order);
+      })
+      .catch(function () {
+        HN.toast("Order failed — please try again.", "shield");
+      });
   }
 
   function showSuccess(order) {

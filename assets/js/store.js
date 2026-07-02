@@ -104,8 +104,10 @@
     grid.innerHTML = items.map(card).join("");
   }
 
-  buildChips();
-  render();
+  DB.init().then(function () {
+    buildChips();
+    render();
+  });
 
   document.addEventListener("hn:langchange", function () {
     buildChips();

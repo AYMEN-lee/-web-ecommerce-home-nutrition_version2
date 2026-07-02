@@ -30,8 +30,10 @@
       '</div>';
     var pw = document.getElementById("pw");
     function attempt() {
-      if (DB.login(pw.value)) { renderAdmin(); }
-      else { HN.toast("Wrong password", "shield"); pw.value = ""; pw.focus(); }
+      DB.login(pw.value).then(function (ok) {
+        if (ok) { DB.fetchOrders().then(renderAdmin); }
+        else { HN.toast("Wrong password", "shield"); pw.value = ""; pw.focus(); }
+      });
     }
     document.getElementById("loginBtn").addEventListener("click", attempt);
     pw.addEventListener("keydown", function (e) { if (e.key === "Enter") attempt(); });
@@ -136,7 +138,7 @@
         b.addEventListener("click", function () {
           var p = DB.get(b.getAttribute("data-del"));
           if (confirm('Delete "' + p.name + '"? This cannot be undone.')) {
-            DB.remove(p.id); renderAdmin(); HN.toast("Product deleted", "trash");
+            DB.remove(p.id).then(function () { renderAdmin(); HN.toast("Product deleted", "trash"); });
           }
         });
       });
@@ -161,16 +163,16 @@
 
       ordersTbody.querySelectorAll(".status-select").forEach(function (sel) {
         sel.addEventListener("change", function () {
-          DB.updateOrderStatus(sel.getAttribute("data-ref"), sel.value);
-          renderAdmin();
+          DB.updateOrderStatus(sel.getAttribute("data-ref"), sel.value)
+            .then(renderAdmin)
+            .catch(function () { HN.toast("Status update failed", "shield"); });
         });
       });
       ordersTbody.querySelectorAll("[data-del-order]").forEach(function (btn) {
         btn.addEventListener("click", function () {
           if (confirm("Delete this order? This cannot be undone.")) {
-            DB.removeOrder(btn.getAttribute("data-del-order"));
-            renderAdmin();
-            HN.toast("Order deleted", "trash");
+            DB.removeOrder(btn.getAttribute("data-del-order"))
+              .then(function () { renderAdmin(); HN.toast("Order deleted", "trash"); });
           }
         });
       });
@@ -180,9 +182,10 @@
     if (clearBtn) {
       clearBtn.addEventListener("click", function () {
         if (confirm("Delete ALL orders? This cannot be undone.")) {
-          localStorage.setItem("hn_orders", "[]");
-          renderAdmin();
-          HN.toast("All orders cleared", "trash");
+          DB.clearAllOrders().then(function () {
+            renderAdmin();
+            HN.toast("All orders cleared", "trash");
+          });
         }
       });
     }
@@ -191,11 +194,9 @@
     if (clearCancelledBtn) {
       clearCancelledBtn.addEventListener("click", function () {
         if (confirm("Delete all cancelled orders? This cannot be undone.")) {
-          var remaining = DB.orders().filter(function (o) { return o.status !== "cancelled"; });
-          localStorage.setItem("hn_orders", JSON.stringify(remaining));
-          orderFilter = "all";
-          renderAdmin();
-          HN.toast("Cancelled orders removed", "trash");
+          DB.clearCancelledOrders().then(function () {
+            orderFilter = "all"; renderAdmin(); HN.toast("Cancelled orders removed", "trash");
+          });
         }
       });
     }
@@ -479,10 +480,13 @@
   function save() {
     var err = validateAndClean();
     if (err) { HN.toast(err, "shield"); return; }
-    DB.save(draft);
-    closeEditor();
-    renderAdmin();
-    HN.toast(editing ? "Product updated" : "Product added");
+    DB.save(draft)
+      .then(function () {
+        closeEditor();
+        renderAdmin();
+        HN.toast(editing ? "Product updated" : "Product added");
+      })
+      .catch(function () { HN.toast("Save failed. Try again.", "shield"); });
   }
 
   /* ---- modal wiring ------------------------------------------------------ */
@@ -493,5 +497,8 @@
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && modal.classList.contains("open")) closeEditor(); });
 
   /* ---- boot -------------------------------------------------------------- */
-  if (DB.isAdmin()) renderAdmin(); else showGate();
+  DB.init().then(function () {
+    if (DB.isAdmin()) { DB.fetchOrders().then(renderAdmin); }
+    else { showGate(); }
+  });
 })();
