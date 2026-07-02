@@ -77,7 +77,9 @@
         '<div class="admin-actions">' +
           (activeTab === "catalog"
             ? '<button class="btn btn--accent" id="addBtn">+ Add product</button>'
-            : (orders.length ? '<button class="btn btn--ghost btn-sm" id="clearOrdersBtn">Clear all orders</button>' : '')) +
+            : (orderFilter === "cancelled" && orderCounts.cancelled
+                ? '<button class="btn btn--ghost btn-sm" id="clearCancelledBtn">Remove all cancelled</button>'
+                : '')) +
         '</div>' +
       '</div>' +
 
@@ -184,6 +186,19 @@
         }
       });
     }
+
+    var clearCancelledBtn = document.getElementById("clearCancelledBtn");
+    if (clearCancelledBtn) {
+      clearCancelledBtn.addEventListener("click", function () {
+        if (confirm("Delete all cancelled orders? This cannot be undone.")) {
+          var remaining = DB.orders().filter(function (o) { return o.status !== "cancelled"; });
+          localStorage.setItem("hn_orders", JSON.stringify(remaining));
+          orderFilter = "all";
+          renderAdmin();
+          HN.toast("Cancelled orders removed", "trash");
+        }
+      });
+    }
   }
 
   function ofBtnHtml(filter, label, count) {
@@ -197,8 +212,21 @@
   function orderRowHtml(o) {
     var c = o.customer || {};
     var itemsSummary = (o.items || []).map(function (it) {
-      return HN.escape(it.name) + ' <span class="muted">(' + HN.escape(it.flavor) + ' · ' + HN.escape(it.weight) + ' ×' + it.qty + ')</span>';
-    }).join('<br>');
+      return (
+        '<div class="order-item-row">' +
+          (it.image
+            ? '<img src="' + HN.escape(it.image) + '" class="order-item-thumb" alt="">'
+            : '<div class="order-item-thumb order-item-thumb--placeholder"></div>') +
+          '<div>' +
+            '<div style="font-weight:600">' + HN.escape(it.name) + '</div>' +
+            '<div class="muted" style="font-size:12px">' +
+              HN.escape(it.flavor) + ' · ' + HN.escape(it.weight) +
+              ' <span style="color:var(--accent)">×' + it.qty + '</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
     var date = o.placedAt ? new Date(o.placedAt).toLocaleString("fr-DZ") : "—";
     var status = (o.status === "new" || !o.status) ? "pending" : o.status;
     var statusColor = STATUS_COLORS[status] || "var(--ash)";
@@ -219,7 +247,7 @@
             : '<span class="badge-office" style="margin-bottom:6px;display:inline-flex">📦 Delivery office</span><br>') +
           HN.escape(c.wilaya || "") + '<br>' +
           '<span class="muted">' + HN.escape(c.city || "") + (c.address ? ', ' + HN.escape(c.address) : '') + '</span></td>' +
-        '<td style="font-size:13px;line-height:1.6">' + (itemsSummary || "—") + '</td>' +
+        '<td style="font-size:13px">' + (itemsSummary || "—") + '</td>' +
         '<td class="mono" style="font-weight:700;white-space:nowrap;color:var(--bone)" dir="ltr">' + HN.money(o.total || 0) + ' DA</td>' +
         '<td>' +
           '<select class="status-select" data-ref="' + HN.escape(o.ref) + '" style="' +
