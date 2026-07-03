@@ -30,7 +30,6 @@
 
     function stockTag(stock) {
       if (stock <= 0) return '<span class="pd__stock"><span class="dot dot--out"></span>Out of stock</span>';
-      if (stock <= 5) return '<span class="pd__stock"><span class="dot dot--low"></span>Only ' + stock + ' left</span>';
       return '<span class="pd__stock"><span class="dot dot--in"></span>In stock</span>';
     }
 
@@ -66,7 +65,6 @@
                 '<input id="qInput" type="number" min="1" value="1" inputmode="numeric" aria-label="Quantity">' +
                 '<button type="button" id="qPlus" aria-label="Increase">+</button>' +
               '</div>' +
-              '<span class="qty-note" id="qNote"></span>' +
             '</div>' +
 
             '<div class="pd__actions">' +
@@ -140,10 +138,6 @@
       var input = document.getElementById("qInput");
       input.value = state.qty;
       input.max   = max;
-
-      document.getElementById("qNote").textContent = max > 0
-        ? "Max " + max + " per order"
-        : "Currently unavailable";
 
       var minus = document.getElementById("qMinus");
       var plus  = document.getElementById("qPlus");

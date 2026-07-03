@@ -1,18 +1,19 @@
 <?php
 /* =============================================================================
-   HN NUTRITION — API shared config
+   HN NUTRITION — API config TEMPLATE
+   Copy this file to config.php and fill in your real values.
+   NEVER commit config.php to git.
    ============================================================================= */
 
-// ---- Database ---------------------------------------------------------------
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'hn_nutrition');
-define('DB_USER', 'root');
-define('DB_PASS', '');          // XAMPP default: no password
+define('DB_USER', 'root');        // your MySQL username
+define('DB_PASS', '');            // your MySQL password
 
-// ---- Admin password (change this!) ------------------------------------------
-define('ADMIN_PASSWORD', 'hn-admin');
+define('ADMIN_PASSWORD', 'change-this-password');   // pick a strong password
 
-// ---- CORS (allows both same-origin Apache and VS Code Live Server) -----------
+// ---- Leave everything below this line unchanged ----------------------------
+
 function cors(): void {
     $allowed = [
         'http://localhost', 'http://127.0.0.1',
@@ -31,7 +32,6 @@ function cors(): void {
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
 }
 
-// ---- Session ----------------------------------------------------------------
 function boot_session(): void {
     if (session_status() === PHP_SESSION_NONE) {
         session_set_cookie_params(['samesite' => 'Lax', 'httponly' => true]);
@@ -39,7 +39,6 @@ function boot_session(): void {
     }
 }
 
-// ---- PDO singleton ----------------------------------------------------------
 function db(): PDO {
     static $pdo = null;
     if ($pdo === null) {
@@ -53,7 +52,6 @@ function db(): PDO {
     return $pdo;
 }
 
-// ---- Response helpers -------------------------------------------------------
 function json_ok(mixed $data = null): never {
     echo json_encode(['ok' => true, 'data' => $data]);
     exit;
@@ -64,13 +62,11 @@ function json_err(string $msg, int $code = 400): never {
     exit;
 }
 
-// ---- Auth gate --------------------------------------------------------------
 function require_admin(): void {
     boot_session();
     if (empty($_SESSION['hn_admin'])) json_err('Unauthorized', 401);
 }
 
-// ---- Read JSON body ---------------------------------------------------------
 function body(): array {
     return json_decode(file_get_contents('php://input'), true) ?: [];
 }

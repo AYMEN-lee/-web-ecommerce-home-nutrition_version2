@@ -26,7 +26,6 @@
         '<div class="field"><label for="pw">Password <span class="req">*</span></label>' +
           '<input id="pw" type="password" placeholder="Enter password"></div>' +
         '<button class="btn btn--accent btn--block btn--lg" id="loginBtn">Sign in</button>' +
-        '<p class="hint">Demo password: <b>hn-admin</b> — change ADMIN_PASSWORD in data.js.</p>' +
       '</div>';
     var pw = document.getElementById("pw");
     function attempt() {

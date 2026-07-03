@@ -1,0 +1,13 @@
+# PHP config with real credentials — never commit this
+api/config.php
+
+# Common junk
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+*.tmp
+
+# Editor folders
+.vscode/settings.json
+.idea/
