@@ -1,19 +1,15 @@
 <?php
 /* =============================================================================
-   HN NUTRITION — API config TEMPLATE
-   Copy this file to config.php and fill in your real values.
-   NEVER commit config.php to git.
+   HN NUTRITION — API config
+   Works locally (XAMPP) AND on Railway (reads env vars if present).
    ============================================================================= */
-
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'hn_nutrition');
-define('DB_USER', 'root');        // your MySQL username
-define('DB_PASS', '');            // your MySQL password
-
-define('ADMIN_PASSWORD', 'change-this-password');   // pick a strong password
-
+define('DB_HOST', getenv('MYSQLHOST') ?: 'localhost');
+define('DB_NAME', getenv('MYSQLDATABASE') ?: 'hn_nutrition');
+define('DB_USER', getenv('MYSQLUSER') ?: 'root');
+define('DB_PASS', getenv('MYSQLPASSWORD') ?: '');
+define('DB_PORT', getenv('MYSQLPORT') ?: '3306');
+define('ADMIN_PASSWORD', getenv('ADMIN_PASSWORD') ?: 'change-this-password');
 // ---- Leave everything below this line unchanged ----------------------------
-
 function cors(): void {
     $allowed = [
         'http://localhost', 'http://127.0.0.1',
@@ -31,19 +27,17 @@ function cors(): void {
     header('Content-Type: application/json; charset=utf-8');
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
 }
-
 function boot_session(): void {
     if (session_status() === PHP_SESSION_NONE) {
         session_set_cookie_params(['samesite' => 'Lax', 'httponly' => true]);
         session_start();
     }
 }
-
 function db(): PDO {
     static $pdo = null;
     if ($pdo === null) {
         $pdo = new PDO(
-            'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4',
+            'mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME . ';charset=utf8mb4',
             DB_USER, DB_PASS,
             [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
              PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
@@ -51,7 +45,6 @@ function db(): PDO {
     }
     return $pdo;
 }
-
 function json_ok(mixed $data = null): never {
     echo json_encode(['ok' => true, 'data' => $data]);
     exit;
@@ -61,12 +54,10 @@ function json_err(string $msg, int $code = 400): never {
     echo json_encode(['ok' => false, 'error' => $msg]);
     exit;
 }
-
 function require_admin(): void {
     boot_session();
     if (empty($_SESSION['hn_admin'])) json_err('Unauthorized', 401);
 }
-
 function body(): array {
     return json_decode(file_get_contents('php://input'), true) ?: [];
 }
