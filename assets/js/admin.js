@@ -42,9 +42,16 @@
   /* ---- dashboard --------------------------------------------------------- */
   var activeTab = "catalog";
   var orderFilter = "all";
+  var catalogSearch = "";
 
   function renderAdmin() {
-    var products = DB.all();
+    var allProducts = DB.all();
+    var products = catalogSearch
+      ? allProducts.filter(function (p) {
+          var q = catalogSearch.toLowerCase();
+          return p.name.toLowerCase().indexOf(q) !== -1 || p.brand.toLowerCase().indexOf(q) !== -1 || p.category.toLowerCase().indexOf(q) !== -1;
+        })
+      : allProducts;
     var orders   = DB.orders();
     /* normalize any legacy "new" status to "pending" in storage */
     var needsSave = false;
@@ -62,7 +69,7 @@
     var filteredOrders = orderFilter === "all"
       ? orders
       : orders.filter(function (o) { return o.status === orderFilter; });
-    var totalVariants = products.reduce(function (n, p) {
+    var totalVariants = allProducts.reduce(function (n, p) {
       return n + p.flavors.reduce(function (m, f) { return m + f.variants.length; }, 0);
     }, 0);
 
@@ -72,7 +79,9 @@
         '<div><h1>' + (activeTab === "catalog" ? "Catalog" : "Orders") + '</h1>' +
           '<div class="sub">' +
             (activeTab === "catalog"
-              ? products.length + ' products · ' + totalVariants + ' variants'
+              ? (catalogSearch
+                  ? products.length + ' of ' + allProducts.length + ' products match "' + HN.escape(catalogSearch) + '"'
+                  : allProducts.length + ' products · ' + totalVariants + ' variants')
               : orders.length + ' order' + (orders.length !== 1 ? 's' : '') + ' total') +
           '</div></div>' +
         '<div class="admin-actions">' +
@@ -120,7 +129,7 @@
       activeTab = "catalog"; renderAdmin();
     });
     document.getElementById("tabOrders").addEventListener("click", function () {
-      activeTab = "orders"; renderAdmin();
+      activeTab = "orders"; catalogSearch = ""; renderAdmin();
     });
 
     /* ---- catalog wiring ---- */
@@ -128,7 +137,9 @@
     if (tbody) {
       tbody.innerHTML = products.length
         ? products.map(rowHtml).join("")
-        : '<tr><td colspan="6" style="text-align:center;color:var(--ash);padding:40px">No products yet. Add your first one.</td></tr>';
+        : '<tr><td colspan="6" style="text-align:center;color:var(--ash);padding:40px">' +
+            (catalogSearch ? 'No products match "' + HN.escape(catalogSearch) + '".' : 'No products yet. Add your first one.') +
+          '</td></tr>';
 
       tbody.querySelectorAll("[data-edit]").forEach(function (b) {
         b.addEventListener("click", function () { openEditor(DB.get(b.getAttribute("data-edit"))); });
@@ -145,6 +156,12 @@
 
     var addBtn = document.getElementById("addBtn");
     if (addBtn) addBtn.addEventListener("click", function () { openEditor(null); });
+
+    var sb = document.getElementById("searchBtn");
+    if (sb) sb.onclick = activeTab === "catalog" ? function () {
+      var q = prompt("Search products" + (catalogSearch ? ' (current: "' + catalogSearch + '")' : "") + "\nLeave blank to clear.");
+      if (q !== null) { catalogSearch = q.trim(); renderAdmin(); }
+    } : null;
 
     /* ---- orders wiring ---- */
     ["all", "pending", "confirmed", "cancelled"].forEach(function (f) {

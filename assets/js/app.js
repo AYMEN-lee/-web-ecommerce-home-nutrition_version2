@@ -259,7 +259,7 @@
       if (toggle) toggle.addEventListener("click", function () { nav.classList.toggle("nav--open"); });
 
       var sb = document.getElementById("searchBtn");
-      if (sb) sb.addEventListener("click", function () {
+      if (sb && page !== "admin") sb.addEventListener("click", function () {
         var q = prompt(HN.t("search_label"));
         if (q) location.href = "index.html?q=" + encodeURIComponent(q.trim());
       });
