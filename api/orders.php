@@ -55,7 +55,7 @@ if ($method === 'POST') {
         (int)($d['subtotal'] ?? 0), (int)($d['delivery'] ?? 0), (int)($d['total'] ?? 0),
         $d['payment']  ?? 'Cash on delivery',
         'pending',
-        $d['placedAt'] ?? date('Y-m-d H:i:s'),
+        date('Y-m-d H:i:s'),
     ]);
     $orderId = (int) $pdo->lastInsertId();
 
