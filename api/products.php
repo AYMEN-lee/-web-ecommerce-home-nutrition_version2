@@ -19,11 +19,11 @@ if ($method === 'GET') {
         $stmt->execute([$id]);
         $product = $stmt->fetch();
         if (!$product) json_err('Product not found', 404);
-        json_ok(hydrate($product));
+        json_ok(hydrate_all([$product])[0]);
     }
 
     $products = db()->query('SELECT * FROM products ORDER BY created_at ASC')->fetchAll();
-    json_ok(array_map('hydrate', $products));
+    json_ok(hydrate_all($products));
 }
 
 /* ---- POST (create / update) ----------------------------------------------- */
@@ -80,18 +80,53 @@ if ($method === 'DELETE') {
 json_err('Method not allowed', 405);
 
 /* ---- helpers -------------------------------------------------------------- */
-function hydrate(array $product): array {
-    $pdo = db();
-    $fStmt = $pdo->prepare('SELECT * FROM flavors WHERE product_id = ? ORDER BY sort_order');
-    $fStmt->execute([$product['id']]);
-    $product['flavors'] = [];
-    foreach ($fStmt->fetchAll() as $flavor) {
-        $vStmt = $pdo->prepare('SELECT weight, price, stock FROM variants WHERE flavor_id = ?');
-        $vStmt->execute([$flavor['id']]);
-        $variants = array_map(function ($v) {
-            return ['weight' => $v['weight'], 'price' => (int)$v['price'], 'stock' => (int)$v['stock']];
-        }, $vStmt->fetchAll());
-        $product['flavors'][] = ['name' => $flavor['name'], 'image' => $flavor['image'], 'variants' => $variants];
+function hydrate_all(array $products): array {
+    if (empty($products)) return [];
+
+    $pdo        = db();
+    $productIds = array_column($products, 'id');
+
+    // Query 1: all flavors for every product in one shot
+    $ph    = implode(',', array_fill(0, count($productIds), '?'));
+    $fStmt = $pdo->prepare("SELECT * FROM flavors WHERE product_id IN ($ph) ORDER BY product_id, sort_order");
+    $fStmt->execute($productIds);
+    $allFlavors = $fStmt->fetchAll();
+
+    if (empty($allFlavors)) {
+        return array_map(function ($p) { $p['flavors'] = []; return $p; }, $products);
     }
-    return $product;
+
+    // Query 2: all variants for every flavor in one shot
+    $flavorIds = array_column($allFlavors, 'id');
+    $ph2       = implode(',', array_fill(0, count($flavorIds), '?'));
+    $vStmt     = $pdo->prepare("SELECT flavor_id, weight, price, stock FROM variants WHERE flavor_id IN ($ph2)");
+    $vStmt->execute($flavorIds);
+
+    // Group variants by flavor_id
+    $variantsByFlavor = [];
+    foreach ($vStmt->fetchAll() as $v) {
+        $variantsByFlavor[$v['flavor_id']][] = [
+            'weight' => $v['weight'],
+            'price'  => (int) $v['price'],
+            'stock'  => (int) $v['stock'],
+        ];
+    }
+
+    // Group flavors (with variants attached) by product_id
+    $flavorsByProduct = [];
+    foreach ($allFlavors as $f) {
+        $flavorsByProduct[$f['product_id']][] = [
+            'name'     => $f['name'],
+            'image'    => $f['image'],
+            'variants' => $variantsByFlavor[$f['id']] ?? [],
+        ];
+    }
+
+    // Attach flavors to each product
+    foreach ($products as &$product) {
+        $product['flavors'] = $flavorsByProduct[$product['id']] ?? [];
+    }
+    unset($product);
+
+    return $products;
 }
