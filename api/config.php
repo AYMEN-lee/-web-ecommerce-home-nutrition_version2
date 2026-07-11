@@ -4,7 +4,7 @@
    Works locally (XAMPP) AND on Railway (reads env vars if present).
    ============================================================================= */
 define('DB_HOST', getenv('MYSQLHOST') ?: 'localhost');
-define('DB_NAME', getenv('MYSQLDATABASE') ?: 'hn_nutrition');
+define('DB_NAME', 'hn_nutrition');
 define('DB_USER', getenv('MYSQLUSER') ?: 'root');
 define('DB_PASS', getenv('MYSQLPASSWORD') ?: '');
 define('DB_PORT', getenv('MYSQLPORT') ?: '3306');
