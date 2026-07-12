@@ -88,7 +88,23 @@
       co_delivery_type:   "Delivery type",
       co_delivery_office: "Delivery office",
       co_home_delivery:   "Home delivery",
-      co_address_home:    "Full address"
+      co_address_home:    "Full address",
+      co_order_failed:    "Order failed — please try again.",
+      /* product detail */
+      pd_not_found:       "Product not found",
+      pd_not_found_p:     "This product may have been removed.",
+      pd_back_shop:       "Back to shop",
+      pd_in_stock:        "In stock",
+      pd_out_of_stock:    "Out of stock",
+      pd_sold_out:        "Sold out",
+      pd_flavor:          "Flavor",
+      pd_size:            "Size",
+      pd_buy_now:         "Buy now",
+      pd_add_cart:        "Add to cart",
+      pd_added_cart:      "{qty}× {name} added to cart",
+      pd_authentic:       "100% authentic",
+      pd_delivery:        "Delivery to 69 wilayas",
+      pd_lab_tested:      "Lab-tested quality"
     },
     ar: {
       nav_shop:        "المتجر",
@@ -170,7 +186,23 @@
       co_delivery_type:   "نوع التوصيل",
       co_delivery_office: "مكتب التوصيل",
       co_home_delivery:   "توصيل للمنزل",
-      co_address_home:    "العنوان الكامل"
+      co_address_home:    "العنوان الكامل",
+      co_order_failed:    "فشل الطلب — يرجى المحاولة مرة أخرى.",
+      /* product detail */
+      pd_not_found:       "المنتج غير موجود",
+      pd_not_found_p:     "ربما تم حذف هذا المنتج.",
+      pd_back_shop:       "العودة إلى المتجر",
+      pd_in_stock:        "متوفر",
+      pd_out_of_stock:    "نفد من المخزون",
+      pd_sold_out:        "نفد",
+      pd_flavor:          "النكهة",
+      pd_size:            "الحجم",
+      pd_buy_now:         "اشترِ الآن",
+      pd_add_cart:        "أضف إلى السلة",
+      pd_added_cart:      "{qty}× {name} أُضيف إلى السلة",
+      pd_authentic:       "١٠٠٪ أصيل",
+      pd_delivery:        "توصيل لـ 69 ولاية",
+      pd_lab_tested:      "جودة مختبرة مخبرياً"
     }
   };
 

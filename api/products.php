@@ -38,19 +38,27 @@ if ($method === 'POST') {
     $pdo = db();
 
     $pdo->prepare(
-        'INSERT INTO products (id, name, brand, category, badge, tagline, description)
-         VALUES (:id,:name,:brand,:category,:badge,:tagline,:description)
+        'INSERT INTO products (id, name, brand, category, badge, tagline, description,
+                               name_ar, brand_ar, tagline_ar, description_ar)
+         VALUES (:id,:name,:brand,:category,:badge,:tagline,:description,
+                 :name_ar,:brand_ar,:tagline_ar,:description_ar)
          ON DUPLICATE KEY UPDATE
            name=VALUES(name), brand=VALUES(brand), category=VALUES(category),
-           badge=VALUES(badge), tagline=VALUES(tagline), description=VALUES(description)'
+           badge=VALUES(badge), tagline=VALUES(tagline), description=VALUES(description),
+           name_ar=VALUES(name_ar), brand_ar=VALUES(brand_ar),
+           tagline_ar=VALUES(tagline_ar), description_ar=VALUES(description_ar)'
     )->execute([
-        'id'          => $data['id'],
-        'name'        => $data['name'],
-        'brand'       => $data['brand'],
-        'category'    => $data['category']    ?? '',
-        'badge'       => $data['badge']       ?? '',
-        'tagline'     => $data['tagline']     ?? '',
-        'description' => $data['description'] ?? '',
+        'id'             => $data['id'],
+        'name'           => $data['name'],
+        'brand'          => $data['brand'],
+        'category'       => $data['category']    ?? '',
+        'badge'          => $data['badge']       ?? '',
+        'tagline'        => $data['tagline']     ?? '',
+        'description'    => $data['description'] ?? '',
+        'name_ar'        => ($data['name_ar']        ?? '') ?: null,
+        'brand_ar'       => ($data['brand_ar']       ?? '') ?: null,
+        'tagline_ar'     => ($data['tagline_ar']     ?? '') ?: null,
+        'description_ar' => ($data['description_ar'] ?? '') ?: null,
     ]);
 
     // Replace flavors (cascade deletes variants automatically)

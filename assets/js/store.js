@@ -52,6 +52,9 @@
   }
 
   function card(p) {
+    var isAr  = HN.currentLang === "ar";
+    var pName  = (isAr && p.name_ar)  ? p.name_ar  : p.name;
+    var pBrand = (isAr && p.brand_ar) ? p.brand_ar : p.brand;
     var img = p.flavors[0] && p.flavors[0].image ? p.flavors[0].image : "assets/img/logo.png";
     var badge = p.badge
       ? '<span class="card__badge ' + (/best/i.test(p.badge) ? "card__badge--accent" : "") + '">' + HN.escape(p.badge) + '</span>'
@@ -61,11 +64,11 @@
       '<a class="card" href="product.html?id=' + encodeURIComponent(p.id) + '">' +
         '<div class="card__media">' + badge +
           '<span class="card__cat">' + HN.escape(p.category) + '</span>' +
-          '<img src="' + HN.escape(img) + '" alt="' + HN.escape(p.name) + '" loading="lazy">' +
+          '<img src="' + HN.escape(img) + '" alt="' + HN.escape(pName) + '" loading="lazy">' +
         '</div>' +
         '<div class="card__body">' +
-          '<span class="card__brand">' + HN.escape(p.brand) + '</span>' +
-          '<h3 class="card__name">' + HN.escape(p.name) + '</h3>' +
+          '<span class="card__brand">' + HN.escape(pBrand) + '</span>' +
+          '<h3 class="card__name">' + HN.escape(pName) + '</h3>' +
           '<div class="card__flavors">' + flavorPills(p) +
             '<span class="flavor-dot">' + variantCount + ' ' + HN.t("sizes") + '</span></div>' +
           '<div class="card__foot">' +

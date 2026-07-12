@@ -219,7 +219,7 @@
         showSuccess(order);
       })
       .catch(function () {
-        HN.toast("Order failed — please try again.", "shield");
+        HN.toast(HN.t("co_order_failed"), "shield");
       });
   }
 

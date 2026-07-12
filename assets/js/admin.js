@@ -309,6 +309,7 @@
   function blankDraft() {
     return {
       id: "", name: "", brand: "", category: "Creatine", badge: "", tagline: "", description: "",
+      name_ar: "", brand_ar: "", tagline_ar: "", description_ar: "",
       flavors: [{ name: "", image: "", variants: [{ weight: "", price: "", stock: "" }] }]
     };
   }
@@ -339,13 +340,21 @@
         ed("brand", "Brand", d.brand) +
       '</div>' +
       '<div class="field-grid">' +
+        ed("name_ar", "Product name (Arabic) — optional", d.name_ar, "مثال: كرياتين أحادي الهيدرات", false, "rtl") +
+        ed("brand_ar", "Brand (Arabic) — optional", d.brand_ar, "مثال: أوستروفيت", false, "rtl") +
+      '</div>' +
+      '<div class="field-grid">' +
         '<div class="field"><label>Category</label><select id="ed-category">' + catOpts + '</select></div>' +
         ed("badge", "Badge (optional)", d.badge, "e.g. Best Seller") +
       '</div>' +
       ed("tagline", "Tagline (optional)", d.tagline, "Short line shown on the product", true) +
+      ed("tagline_ar", "Tagline (Arabic) — optional", d.tagline_ar, "سطر قصير بالعربية", true, "rtl") +
       '<div class="field full"><label>Description</label>' +
         '<textarea id="ed-description" rows="3" style="background:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:13px 14px;color:var(--bone);font-family:inherit;font-size:15px;resize:vertical">' +
           HN.escape(d.description) + '</textarea></div>' +
+      '<div class="field full"><label>Description (Arabic) — optional</label>' +
+        '<textarea id="ed-description_ar" rows="3" dir="rtl" style="background:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:13px 14px;color:var(--bone);font-family:inherit;font-size:15px;resize:vertical">' +
+          HN.escape(d.description_ar) + '</textarea></div>' +
       '<div style="display:flex;align-items:center;justify-content:space-between;margin:22px 0 12px">' +
         '<div class="opt__label" style="margin:0">Flavors & sizes</div>' +
         '<button class="btn btn--outline btn-sm" id="addFlavor">+ Add flavor</button></div>' +
@@ -353,6 +362,7 @@
 
     document.getElementById("ed-category").addEventListener("change", function () { d.category = this.value; });
     bindField("name"); bindField("brand"); bindField("badge"); bindField("tagline"); bindField("description");
+    bindField("name_ar"); bindField("brand_ar"); bindField("tagline_ar"); bindField("description_ar");
     document.getElementById("addFlavor").addEventListener("click", function () {
       d.flavors.push({ name: "", image: "", variants: [{ weight: "", price: "", stock: "" }] });
       renderFlavors();
@@ -360,10 +370,11 @@
     renderFlavors();
   }
 
-  function ed(key, label, val, ph, full) {
+  function ed(key, label, val, ph, full, dir) {
     return (
       '<div class="field' + (full ? " full" : "") + '"><label>' + label + '</label>' +
-        '<input id="ed-' + key + '" value="' + HN.escape(val || "") + '" placeholder="' + (ph || "") + '"></div>'
+        '<input id="ed-' + key + '" value="' + HN.escape(val || "") + '" placeholder="' + (ph || "") + '"' +
+        (dir ? ' dir="' + dir + '"' : '') + '></div>'
     );
   }
   function bindField(key) {
@@ -489,6 +500,8 @@
     d.name = d.name.trim(); d.brand = d.brand.trim();
     d.tagline = (d.tagline || "").trim(); d.badge = (d.badge || "").trim();
     d.description = (d.description || "").trim();
+    d.name_ar = (d.name_ar || "").trim(); d.brand_ar = (d.brand_ar || "").trim();
+    d.tagline_ar = (d.tagline_ar || "").trim(); d.description_ar = (d.description_ar || "").trim();
     if (!editing) d.id = uniqueId(slugify(d.brand + "-" + d.name));
     return null;
   }

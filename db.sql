@@ -10,14 +10,18 @@ USE hn_nutrition;
 --  Tables
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS products (
-  id          VARCHAR(120)  PRIMARY KEY,
-  name        VARCHAR(200)  NOT NULL,
-  brand       VARCHAR(100)  NOT NULL,
-  category    VARCHAR(100)  NOT NULL,
-  badge       VARCHAR(80)   DEFAULT '',
-  tagline     VARCHAR(300)  DEFAULT '',
-  description TEXT,
-  created_at  TIMESTAMP     DEFAULT CURRENT_TIMESTAMP
+  id             VARCHAR(120)  PRIMARY KEY,
+  name           VARCHAR(200)  NOT NULL,
+  brand          VARCHAR(100)  NOT NULL,
+  category       VARCHAR(100)  NOT NULL,
+  badge          VARCHAR(80)   DEFAULT '',
+  tagline        VARCHAR(300)  DEFAULT '',
+  description    TEXT,
+  name_ar        VARCHAR(200)  DEFAULT NULL,
+  brand_ar       VARCHAR(100)  DEFAULT NULL,
+  tagline_ar     VARCHAR(300)  DEFAULT NULL,
+  description_ar TEXT          DEFAULT NULL,
+  created_at     TIMESTAMP     DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS flavors (
