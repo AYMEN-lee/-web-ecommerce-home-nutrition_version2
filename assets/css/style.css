@@ -82,6 +82,7 @@ input, select, textarea { font-family: inherit; }
 @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 /* ---- header ------------------------------------------------------------ */
+#site-header { min-height: 72px; }
 .header {
   position: sticky; top: 0; z-index: 60;
   background: rgba(10,10,11,.82);
@@ -411,6 +412,7 @@ input, select, textarea { font-family: inherit; }
 .success__ref { font-family: var(--mono); display: inline-block; margin: 18px 0 28px; padding: 9px 16px; border: 1px dashed var(--accent-line); border-radius: 9px; color: var(--accent); letter-spacing: .1em; }
 
 /* ---- footer ------------------------------------------------------------ */
+#site-footer { min-height: 320px; }
 .footer { border-top: 1px solid var(--line); background: var(--carbon); margin-top: 30px; }
 .footer__grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 30px; padding: 52px 0 36px; }
 .footer__brand p { color: var(--ash); font-size: 13.5px; max-width: 300px; margin: 16px 0 0; line-height: 1.6; }
