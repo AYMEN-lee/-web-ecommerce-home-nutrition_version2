@@ -278,6 +278,7 @@ input, select, textarea { font-family: inherit; }
 .empty h3 { font-family: var(--display); color: var(--bone); text-transform: uppercase; margin: 0 0 8px; }
 
 /* ---- product detail ---------------------------------------------------- */
+#pd { min-height: 600px; }
 .pd { display: grid; grid-template-columns: 1.05fr 1fr; gap: 46px; padding: 44px 0 70px; }
 .pd__gallery { position: sticky; top: calc(var(--header-h) + 24px); align-self: start; }
 .pd__stage {
