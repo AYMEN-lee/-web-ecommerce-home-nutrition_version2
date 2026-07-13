@@ -5,11 +5,6 @@
   "use strict";
 
   var root = document.getElementById("cartRoot");
-  var SHIP_FREE_FROM = 5000;
-  var SHIP_COST = 500;
-
-  function shipping(total) { return total >= SHIP_FREE_FROM || total === 0 ? 0 : SHIP_COST; }
-
   function render() {
     var cart = DB.cart();
 
@@ -22,7 +17,6 @@
     }
 
     var subtotal = DB.cartTotal();
-    var ship = shipping(subtotal);
 
     var items = cart.map(function (it) {
       return (
@@ -52,12 +46,8 @@
         '<aside class="summary">' +
           '<h3>' + HN.t("cart_summary") + '</h3>' +
           '<div class="summary__row"><span>' + HN.t("co_subtotal") + '</span><span>' + HN.money(subtotal) + ' DA</span></div>' +
-          '<div class="summary__row"><span>' + HN.t("co_delivery") + '</span><span>' + (ship === 0 ? HN.t("co_free") : HN.money(ship) + " DA") + '</span></div>' +
-          '<div class="summary__total"><span>' + HN.t("co_total") + '</span><b>' + HN.money(subtotal + ship) + ' DA</b></div>' +
-          '<p class="summary__note">' + (subtotal >= SHIP_FREE_FROM
-              ? HN.t("cart_free_unlocked")
-              : HN.t("cart_free_note", { remaining: HN.money(SHIP_FREE_FROM - subtotal) })) +
-            ' ' + HN.t("cart_cod") + '</p>' +
+          '<div class="summary__total"><span>' + HN.t("co_total") + '</span><b>' + HN.money(subtotal) + ' DA</b></div>' +
+          '<p class="summary__note">' + HN.t("cart_cod") + '</p>' +
           '<a class="btn btn--accent btn--block btn--lg" href="checkout.html">' + HN.t("co_place_order") + '</a>' +
           '<a class="btn btn--ghost btn--block" href="index.html" style="margin-top:10px">' + HN.t("co_keep_shop") + '</a>' +
         '</aside>' +
