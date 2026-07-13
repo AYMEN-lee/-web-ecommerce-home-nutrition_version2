@@ -97,9 +97,7 @@
         '<aside class="summary">' +
           '<h3>' + HN.t("co_your_order") + '</h3>' +
           miniItems +
-          '<div class="summary__row" style="margin-top:14px">' +
-            '<span>' + HN.t("co_subtotal") + '</span><span>' + HN.money(subtotal) + ' DA</span></div>' +
-          '<div class="summary__total">' +
+          '<div class="summary__total" style="margin-top:14px">' +
             '<span>' + HN.t("co_total") + '</span><b>' + HN.money(subtotal) + ' DA</b></div>' +
           '<p class="summary__note">' + HN.t("co_cod_note") + '</p>' +
           '<a class="btn btn--ghost btn--block" href="cart.html">' + HN.t("co_back_cart") + '</a>' +

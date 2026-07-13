@@ -45,7 +45,6 @@
         '<div class="cart-list">' + items + '</div>' +
         '<aside class="summary">' +
           '<h3>' + HN.t("cart_summary") + '</h3>' +
-          '<div class="summary__row"><span>' + HN.t("co_subtotal") + '</span><span>' + HN.money(subtotal) + ' DA</span></div>' +
           '<div class="summary__total"><span>' + HN.t("co_total") + '</span><b>' + HN.money(subtotal) + ' DA</b></div>' +
           '<p class="summary__note">' + HN.t("cart_cod") + '</p>' +
           '<a class="btn btn--accent btn--block btn--lg" href="checkout.html">' + HN.t("co_place_order") + '</a>' +
