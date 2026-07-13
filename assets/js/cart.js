@@ -15,9 +15,9 @@
 
     if (!cart.length) {
       root.innerHTML =
-        '<div class="empty"><h3>Your cart is empty</h3>' +
-        '<p>Find your next tub of fuel in the shop.</p>' +
-        '<a class="btn btn--accent" href="index.html" style="margin-top:18px">Start shopping</a></div>';
+        '<div class="empty"><h3>' + HN.t("cart_empty_title") + '</h3>' +
+        '<p>' + HN.t("cart_empty_p") + '</p>' +
+        '<a class="btn btn--accent" href="index.html" style="margin-top:18px">' + HN.t("cart_start_shop") + '</a></div>';
       return;
     }
 
@@ -40,7 +40,7 @@
               '<button type="button" data-act="inc" aria-label="Increase">+</button>' +
             '</div>' +
             '<div class="cart-item__price">' + HN.money(it.price * it.qty) + ' DA</div>' +
-            '<button class="link-remove" data-act="rm">' + HN.icon("trash") + ' Remove</button>' +
+            '<button class="link-remove" data-act="rm">' + HN.icon("trash") + ' ' + HN.t("cart_remove") + '</button>' +
           '</div>' +
         '</div>'
       );
@@ -50,16 +50,16 @@
       '<div class="cart-layout">' +
         '<div class="cart-list">' + items + '</div>' +
         '<aside class="summary">' +
-          '<h3>Order summary</h3>' +
-          '<div class="summary__row"><span>Subtotal</span><span>' + HN.money(subtotal) + ' DA</span></div>' +
-          '<div class="summary__row"><span>Delivery</span><span>' + (ship === 0 ? "Free" : HN.money(ship) + " DA") + '</span></div>' +
-          '<div class="summary__total"><span>Total</span><b>' + HN.money(subtotal + ship) + ' DA</b></div>' +
+          '<h3>' + HN.t("cart_summary") + '</h3>' +
+          '<div class="summary__row"><span>' + HN.t("co_subtotal") + '</span><span>' + HN.money(subtotal) + ' DA</span></div>' +
+          '<div class="summary__row"><span>' + HN.t("co_delivery") + '</span><span>' + (ship === 0 ? HN.t("co_free") : HN.money(ship) + " DA") + '</span></div>' +
+          '<div class="summary__total"><span>' + HN.t("co_total") + '</span><b>' + HN.money(subtotal + ship) + ' DA</b></div>' +
           '<p class="summary__note">' + (subtotal >= SHIP_FREE_FROM
-              ? "You unlocked free delivery."
-              : "Add " + HN.money(SHIP_FREE_FROM - subtotal) + " DA more for free delivery.") +
-            ' Pay cash on delivery.</p>' +
-          '<a class="btn btn--accent btn--block btn--lg" href="checkout.html">Confirm my order</a>' +
-          '<a class="btn btn--ghost btn--block" href="index.html" style="margin-top:10px">Continue shopping</a>' +
+              ? HN.t("cart_free_unlocked")
+              : HN.t("cart_free_note", { remaining: HN.money(SHIP_FREE_FROM - subtotal) })) +
+            ' ' + HN.t("cart_cod") + '</p>' +
+          '<a class="btn btn--accent btn--block btn--lg" href="checkout.html">' + HN.t("co_place_order") + '</a>' +
+          '<a class="btn btn--ghost btn--block" href="index.html" style="margin-top:10px">' + HN.t("co_keep_shop") + '</a>' +
         '</aside>' +
       '</div>';
 
@@ -81,7 +81,7 @@
         DB.updateQty(key, parseInt(input.value, 10) || 1); refreshAll();
       });
       row.querySelector('[data-act="rm"]').addEventListener("click", function () {
-        DB.removeFromCart(key); refreshAll(); HN.toast("Item removed", "trash");
+        DB.removeFromCart(key); refreshAll(); HN.toast(HN.t("cart_item_removed"), "trash");
       });
     });
   }
@@ -89,4 +89,5 @@
   function refreshAll() { render(); HN.updateBadge(); }
 
   render();
+  document.addEventListener("hn:langchange", render);
 })();

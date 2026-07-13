@@ -7,9 +7,6 @@
   var root    = document.getElementById("checkoutRoot");
   var crumb   = document.querySelector(".crumb");
 
-  var SHIP_FREE_FROM = 5000;
-  var SHIP_COST      = 500;
-
   var WILAYAS = [
     "01 - Adrar","02 - Chlef","03 - Laghouat","04 - Oum El Bouaghi","05 - Batna","06 - Béjaïa",
     "07 - Biskra","08 - Béchar","09 - Blida","10 - Bouira","11 - Tamanrasset","12 - Tébessa",
@@ -25,8 +22,6 @@
     "64 - Ksar Chellala","65 - Aïn Oussera","66 - Messaad","67 - Ksar El Boukhari",
     "68 - Boussaâda","69 - El Abiodh Sidi Cheikh"
   ];
-
-  function shipping(total) { return total >= SHIP_FREE_FROM || total === 0 ? 0 : SHIP_COST; }
 
   function render() {
     /* update breadcrumb */
@@ -46,7 +41,6 @@
     }
 
     var subtotal = DB.cartTotal();
-    var ship     = shipping(subtotal);
 
     var miniItems = cart.map(function (it) {
       return (
@@ -95,7 +89,7 @@
             '</div>' +
 
             '<button type="submit" class="btn btn--accent btn--block btn--lg" style="margin-top:8px">' +
-              HN.t("co_place_order") + ' · <span dir="ltr">' + HN.money(subtotal + ship) + ' DA</span>' +
+              HN.t("co_place_order") + ' · <span dir="ltr">' + HN.money(subtotal) + ' DA</span>' +
             '</button>' +
           '</form>' +
         '</div>' +
@@ -105,17 +99,14 @@
           miniItems +
           '<div class="summary__row" style="margin-top:14px">' +
             '<span>' + HN.t("co_subtotal") + '</span><span>' + HN.money(subtotal) + ' DA</span></div>' +
-          '<div class="summary__row">' +
-            '<span>' + HN.t("co_delivery") + '</span>' +
-            '<span>' + (ship === 0 ? HN.t("co_free") : HN.money(ship) + " DA") + '</span></div>' +
           '<div class="summary__total">' +
-            '<span>' + HN.t("co_total") + '</span><b>' + HN.money(subtotal + ship) + ' DA</b></div>' +
+            '<span>' + HN.t("co_total") + '</span><b>' + HN.money(subtotal) + ' DA</b></div>' +
           '<p class="summary__note">' + HN.t("co_cod_note") + '</p>' +
           '<a class="btn btn--ghost btn--block" href="cart.html">' + HN.t("co_back_cart") + '</a>' +
         '</aside>' +
       '</div>';
 
-    wire(subtotal, ship);
+    wire(subtotal);
   }
 
   function field(id, label, type, ph, full, required) {
@@ -146,7 +137,7 @@
 
   var deliveryType = "office";
 
-  function wire(subtotal, ship) {
+  function wire(subtotal) {
     var form        = document.getElementById("orderForm");
     var addrWrap    = document.getElementById("addressWrap");
     var addrInput   = document.getElementById("address");
@@ -183,7 +174,7 @@
         if (firstBad) firstBad.focus();
         return;
       }
-      placeOrder(subtotal, ship);
+      placeOrder(subtotal);
     });
 
     form.querySelectorAll("[data-required]").forEach(function (input) {
@@ -193,7 +184,7 @@
     });
   }
 
-  function placeOrder(subtotal, ship) {
+  function placeOrder(subtotal) {
     var data = {};
     ["firstName", "lastName", "phone", "wilaya", "city", "address"].forEach(function (k) {
       var el = document.getElementById(k);
@@ -206,8 +197,8 @@
       deliveryType: deliveryType,
       items: DB.cart(),
       subtotal: subtotal,
-      delivery: ship,
-      total: subtotal + ship,
+      delivery: 0,
+      total: subtotal,
       payment: "Cash on delivery",
       placedAt: new Date().toISOString()
     };

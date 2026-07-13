@@ -104,7 +104,17 @@
       pd_added_cart:      "{qty}× {name} added to cart",
       pd_authentic:       "100% authentic",
       pd_delivery:        "Delivery to 69 wilayas",
-      pd_lab_tested:      "Lab-tested quality"
+      pd_lab_tested:      "Lab-tested quality",
+      /* cart */
+      cart_empty_title:   "Your cart is empty",
+      cart_empty_p:       "Find your next tub of fuel in the shop.",
+      cart_start_shop:    "Start shopping",
+      cart_summary:       "Order summary",
+      cart_free_unlocked: "You unlocked free delivery!",
+      cart_free_note:     "Add {remaining} DA more for free delivery.",
+      cart_cod:           "Pay cash on delivery.",
+      cart_remove:        "Remove",
+      cart_item_removed:  "Item removed"
     },
     ar: {
       nav_shop:        "المتجر",
@@ -202,7 +212,17 @@
       pd_added_cart:      "{qty}× {name} أُضيف إلى السلة",
       pd_authentic:       "١٠٠٪ أصيل",
       pd_delivery:        "توصيل لـ 69 ولاية",
-      pd_lab_tested:      "جودة مختبرة مخبرياً"
+      pd_lab_tested:      "جودة مختبرة مخبرياً",
+      /* cart */
+      cart_empty_title:   "سلة التسوق فارغة",
+      cart_empty_p:       "ابحث عن مكملاتك الغذائية في المتجر.",
+      cart_start_shop:    "تسوق الآن",
+      cart_summary:       "ملخص الطلب",
+      cart_free_unlocked: "لقد حصلت على توصيل مجاني!",
+      cart_free_note:     "أضف {remaining} دينار إضافياً للتوصيل المجاني.",
+      cart_cod:           "الدفع نقداً عند التسليم.",
+      cart_remove:        "إزالة",
+      cart_item_removed:  "تمت إزالة المنتج"
     }
   };
 
