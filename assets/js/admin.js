@@ -340,19 +340,19 @@
         ed("brand", "Brand", d.brand) +
       '</div>' +
       '<div class="field-grid">' +
-        ed("name_ar", "Product name (Arabic) — optional", d.name_ar, "مثال: كرياتين أحادي الهيدرات", false, "rtl") +
-        ed("brand_ar", "Brand (Arabic) — optional", d.brand_ar, "مثال: أوستروفيت", false, "rtl") +
-      '</div>' +
-      '<div class="field-grid">' +
         '<div class="field"><label>Category</label><select id="ed-category">' + catOpts + '</select></div>' +
         ed("badge", "Badge (optional)", d.badge, "e.g. Best Seller") +
       '</div>' +
       ed("tagline", "Tagline (optional)", d.tagline, "Short line shown on the product", true) +
-      ed("tagline_ar", "Tagline (Arabic) — optional", d.tagline_ar, "سطر قصير بالعربية", true, "rtl") +
       '<div class="field full"><label>Description</label>' +
         '<textarea id="ed-description" rows="3" style="background:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:13px 14px;color:var(--bone);font-family:inherit;font-size:15px;resize:vertical">' +
           HN.escape(d.description) + '</textarea></div>' +
-      '<div class="field full"><label>Description (Arabic) — optional</label>' +
+      '<div class="field-grid">' +
+        ed("name_ar", "اسم المنتج (بالعربية) — اختياري", d.name_ar, "مثال: كرياتين أحادي الهيدرات", false, "rtl") +
+        ed("brand_ar", "العلامة التجارية (بالعربية) — اختياري", d.brand_ar, "مثال: أوستروفيت", false, "rtl") +
+      '</div>' +
+      ed("tagline_ar", "الوصف القصير (بالعربية) — اختياري", d.tagline_ar, "سطر قصير بالعربية", true, "rtl") +
+      '<div class="field full"><label>الوصف (بالعربية) — اختياري</label>' +
         '<textarea id="ed-description_ar" rows="3" dir="rtl" style="background:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:13px 14px;color:var(--bone);font-family:inherit;font-size:15px;resize:vertical">' +
           HN.escape(d.description_ar) + '</textarea></div>' +
       '<div style="display:flex;align-items:center;justify-content:space-between;margin:22px 0 12px">' +

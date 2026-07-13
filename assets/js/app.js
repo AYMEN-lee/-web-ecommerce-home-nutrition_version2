@@ -207,6 +207,9 @@
   };
 
   HN.currentLang = localStorage.getItem("hn_lang") || "en";
+  if (document.body && document.body.getAttribute("data-page") === "admin") {
+    HN.currentLang = "en"; /* admin always English; localStorage not touched */
+  }
 
   HN.t = function (key, vars) {
     var str = (STRINGS[HN.currentLang] || STRINGS.en)[key] || key;
