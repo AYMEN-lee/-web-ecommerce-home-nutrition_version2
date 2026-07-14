@@ -628,6 +628,18 @@ input, select, textarea { font-family: inherit; }
   .card__view svg { width: 14px; height: 14px; }
 }
 
+/* ---- Skeleton loader --------------------------------------------------- */
+@keyframes skel-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .45; }
+}
+.card--skel {
+  background: var(--carbon);
+  border-radius: 18px;
+  min-height: 380px;
+  animation: skel-pulse 1.4s ease infinite;
+}
+
 /* ---- RTL / Arabic ------------------------------------------------------ */
 html[dir="rtl"] {
   font-family: "Cairo", system-ui, sans-serif;

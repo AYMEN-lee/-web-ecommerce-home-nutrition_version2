@@ -403,7 +403,14 @@
             (draft.flavors.length > 1 ? '<button class="btn btn--ghost btn-sm f-del">Remove flavor</button>' : '') +
           '</div>' +
           '<div class="field" style="margin-bottom:12px"><label>Image URL or path</label>' +
-            '<input class="f-image" placeholder="assets/img/your-image.jpg or https://…" value="' + HN.escape(f.image) + '"></div>' +
+            (f.image && f.image.indexOf('api/image.php') !== -1
+              ? '<img src="' + HN.escape(f.image) + '" style="width:52px;height:52px;object-fit:cover;border-radius:6px;display:block;margin-bottom:6px" alt="">'
+              : '') +
+            '<input class="f-image" placeholder="' +
+              (f.image && f.image.indexOf('api/image.php') !== -1
+                ? 'Leave blank to keep current · paste URL or upload to change'
+                : 'assets/img/your-image.jpg or https://…') + '" value="' +
+              (f.image && f.image.indexOf('api/image.php') !== -1 ? '' : HN.escape(f.image)) + '"></div>' +
           '<div class="field" style="margin-bottom:14px"><label style="cursor:pointer;color:var(--accent)">⤓ Or upload image' +
             '<input type="file" class="f-upload" accept="image/*" style="display:none"></label></div>' +
           variants +
@@ -492,7 +499,9 @@
         variants.push({ weight: String(v.weight).trim(), price: price, stock: stock });
       }
       if (!variants.length) return 'Add at least one size with a price for "' + name + '".';
-      cleanedFlavors.push({ name: name, image: (f.image || "").trim() || "assets/img/logo.png", variants: variants });
+      var img = (f.image || "").trim();
+      if (img.indexOf('api/image.php') !== -1) img = ''; /* server preserves existing by name */
+      cleanedFlavors.push({ name: name, image: img, variants: variants });
     }
     if (!cleanedFlavors.length) return "Add at least one flavor.";
 

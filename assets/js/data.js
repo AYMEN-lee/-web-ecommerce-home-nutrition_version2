@@ -14,6 +14,27 @@
   /* ---- in-memory cache --------------------------------------------------- */
   var _cache = { products: [], orders: [] };
 
+  /* ---- product localStorage cache (5 min TTL) ---------------------------- */
+  var PROD_CACHE_KEY = 'hn_products_v2';
+  var PROD_CACHE_TTL = 5 * 60 * 1000;
+
+  function _readProdCache() {
+    try {
+      var raw = localStorage.getItem(PROD_CACHE_KEY);
+      if (!raw) return null;
+      var obj = JSON.parse(raw);
+      if (!obj || !obj.ts || !Array.isArray(obj.data)) return null;
+      if (Date.now() - obj.ts > PROD_CACHE_TTL) return null;
+      return obj.data;
+    } catch (e) { return null; }
+  }
+  function _writeProdCache(data) {
+    try { localStorage.setItem(PROD_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: data })); } catch (e) {}
+  }
+  function _clearProdCache() {
+    try { localStorage.removeItem(PROD_CACHE_KEY); } catch (e) {}
+  }
+
   /* ---- cart — stays in localStorage -------------------------------------- */
   var CART_KEY  = 'hn_cart';
   var ADMIN_KEY = 'hn_admin_ok';
@@ -47,10 +68,14 @@
   /* ---- public API -------------------------------------------------------- */
   var DB = {
 
-    /* -- initialise: call once per page, await before rendering ------------ */
+    /* -- initialise: returns instantly from localStorage if cache is fresh -- */
     init: function () {
+      var cached = _readProdCache();
+      if (cached) { _cache.products = cached; return Promise.resolve(); }
       return apiFetch('/products.php')
-        .then(function (res) { if (res.ok) _cache.products = res.data; })
+        .then(function (res) {
+          if (res.ok) { _cache.products = res.data; _writeProdCache(res.data); }
+        })
         .catch(function (e) { console.warn('HN: products unavailable —', e.message); });
     },
 
@@ -75,12 +100,18 @@
     },
 
     save: function (product) {
-      return apiJSON('POST', '/products.php', product).then(function () { return DB.init(); });
+      return apiJSON('POST', '/products.php', product).then(function () {
+        _clearProdCache();
+        return DB.init();
+      });
     },
 
     remove: function (id) {
       return apiFetch('/products.php?id=' + encodeURIComponent(id), { method: 'DELETE' })
-        .then(function () { return DB.init(); });
+        .then(function () {
+          _clearProdCache();
+          return DB.init();
+        });
     },
 
     /* -- cart (synchronous, localStorage) ---------------------------------- */

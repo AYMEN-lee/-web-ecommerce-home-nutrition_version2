@@ -51,7 +51,7 @@
     }).join("") + (p.flavors.length > 3 ? '<span class="flavor-dot">+' + (p.flavors.length - 3) + '</span>' : "");
   }
 
-  function card(p) {
+  function card(p, isFirst) {
     var isAr  = HN.currentLang === "ar";
     var pName  = (isAr && p.name_ar)  ? p.name_ar  : p.name;
     var pBrand = (isAr && p.brand_ar) ? p.brand_ar : p.brand;
@@ -60,11 +60,12 @@
       ? '<span class="card__badge ' + (/best/i.test(p.badge) ? "card__badge--accent" : "") + '">' + HN.escape(p.badge) + '</span>'
       : "";
     var variantCount = p.flavors.reduce(function (n, f) { return n + f.variants.length; }, 0);
+    var imgAttrs = isFirst ? 'fetchpriority="high"' : 'loading="lazy"';
     return (
       '<a class="card" href="product.html?id=' + encodeURIComponent(p.id) + '">' +
         '<div class="card__media">' + badge +
           '<span class="card__cat">' + HN.escape(p.category) + '</span>' +
-          '<img src="' + HN.escape(img) + '" alt="' + HN.escape(pName) + '" loading="lazy">' +
+          '<img src="' + HN.escape(img) + '" alt="' + HN.escape(pName) + '" ' + imgAttrs + '>' +
         '</div>' +
         '<div class="card__body">' +
           '<span class="card__brand">' + HN.escape(pBrand) + '</span>' +
@@ -104,8 +105,10 @@
         '<a class="btn btn--outline" href="index.html" style="margin-top:16px">' + HN.t("empty_btn") + '</a></div>';
       return;
     }
-    grid.innerHTML = items.map(card).join("");
+    grid.innerHTML = items.map(function (p, i) { return card(p, i === 0); }).join("");
   }
+
+  grid.innerHTML = '<div class="card card--skel"></div>'.repeat(6);
 
   DB.init().then(function () {
     buildChips();

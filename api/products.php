@@ -61,12 +61,26 @@ if ($method === 'POST') {
         'description_ar' => ($data['description_ar'] ?? '') ?: null,
     ]);
 
+    // Snapshot existing images by flavor name before deleting
+    $existingImages = [];
+    $imgStmt = $pdo->prepare('SELECT name, image FROM flavors WHERE product_id = ?');
+    $imgStmt->execute([$data['id']]);
+    foreach ($imgStmt->fetchAll() as $eRow) {
+        if ($eRow['name'] !== '') $existingImages[$eRow['name']] = $eRow['image'];
+    }
+
     // Replace flavors (cascade deletes variants automatically)
     $pdo->prepare('DELETE FROM flavors WHERE product_id = ?')->execute([$data['id']]);
 
     foreach (($data['flavors'] ?? []) as $fi => $flavor) {
+        $fName = $flavor['name'] ?? '';
+        $fImg  = trim($flavor['image'] ?? '');
+        // Empty string or internal API URL → restore existing image; fall back to logo
+        if ($fImg === '' || strpos($fImg, 'api/image.php') !== false) {
+            $fImg = $existingImages[$fName] ?? 'assets/img/logo.png';
+        }
         $pdo->prepare('INSERT INTO flavors (product_id, name, image, sort_order) VALUES (?,?,?,?)')
-            ->execute([$data['id'], $flavor['name'] ?? '', $flavor['image'] ?? '', $fi]);
+            ->execute([$data['id'], $fName, $fImg, $fi]);
         $flavorId = (int) $pdo->lastInsertId();
         foreach (($flavor['variants'] ?? []) as $v) {
             $pdo->prepare('INSERT INTO variants (flavor_id, weight, price, stock) VALUES (?,?,?,?)')
@@ -125,7 +139,7 @@ function hydrate_all(array $products): array {
     foreach ($allFlavors as $f) {
         $flavorsByProduct[$f['product_id']][] = [
             'name'     => $f['name'],
-            'image'    => $f['image'],
+            'image'    => 'api/image.php?fid=' . $f['id'],
             'variants' => $variantsByFlavor[$f['id']] ?? [],
         ];
     }
