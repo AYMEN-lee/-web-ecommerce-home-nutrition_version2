@@ -69,7 +69,7 @@
             field("phone", HN.t("co_phone"), "tel", HN.t("co_phone_ph"), true) +
             '<div class="field-grid">' +
               wilayaField() +
-              field("city", HN.t("co_city"), "text", HN.t("co_city_ph")) +
+              communeField() +
             '</div>' +
 
             /* delivery type toggle */
@@ -133,6 +133,18 @@
     );
   }
 
+  function communeField() {
+    return (
+      '<div class="field">' +
+        '<label for="city">' + HN.t("co_city") + ' <span class="req">*</span></label>' +
+        '<select id="city" name="city" data-required="1" disabled>' +
+          '<option value="">' + HN.t("co_commune_ph") + '</option>' +
+        '</select>' +
+        '<span class="err">' + HN.t("co_err_commune") + '</span>' +
+      '</div>'
+    );
+  }
+
   var deliveryType = "office";
 
   function wire(subtotal) {
@@ -140,6 +152,24 @@
     var addrWrap    = document.getElementById("addressWrap");
     var addrInput   = document.getElementById("address");
     var deliveryOpts = form.querySelectorAll(".delivery-opt");
+    var wilayaSel   = document.getElementById("wilaya");
+    var citySel     = document.getElementById("city");
+
+    /* wilaya → commune cascade */
+    wilayaSel.addEventListener("change", function () {
+      var code     = parseInt(this.value, 10);
+      var communes = (typeof ALGERIA_COMMUNES !== "undefined" && ALGERIA_COMMUNES[code]) || [];
+      var isAr     = HN.currentLang === "ar";
+      citySel.innerHTML = '<option value="">' + HN.t("co_commune_ph") + '</option>';
+      communes.forEach(function (c) {
+        var opt = document.createElement("option");
+        opt.value = c.n;
+        opt.textContent = (isAr && c.ar) ? c.ar : c.n;
+        citySel.appendChild(opt);
+      });
+      citySel.disabled = communes.length === 0;
+      citySel.closest(".field").classList.remove("invalid");
+    });
 
     /* delivery type toggle */
     deliveryOpts.forEach(function (btn) {
